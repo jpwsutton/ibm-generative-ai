@@ -10,6 +10,7 @@ class ServiceInterface:
     TOKENIZE = "/tokenize"
     HISTORY = "/requests"
     TOU = "/user"
+    MODELS = "/models"
 
     def __init__(self, service_url: str, api_key: str) -> None:
         """Initialize ServiceInterface.
@@ -105,6 +106,16 @@ class ServiceInterface:
         try:
             endpoint = self.service_url + ServiceInterface.TOU
             return RequestHandler.patch(endpoint, key=self.key, json_data=tou_payload)
+        except Exception as e:
+            raise GenAiException(e)
+
+    def models(self, full: bool = False) -> Response:
+        try:
+            endpoint = self.service_url + ServiceInterface.MODELS
+            if full is True:
+                endpoint = self.service_url + ServiceInterface.MODELS + "/full"
+
+            return RequestHandler.get(endpoint, key=self.key)
         except Exception as e:
             raise GenAiException(e)
 

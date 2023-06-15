@@ -123,6 +123,18 @@ class HistoryResponse(GenAiResponseModel):
     totalCount: int
 
 
+class ModelResult(GenAiResponseModel):
+    id: str
+    name: str
+    size: str
+    source_model_id: Union[str, None]
+    token_limit: int
+
+
+class ModelResponse(GenAiResponseModel):
+    results: list[ModelResult]
+
+
 class ErrorExtensionStateParam(GenAiResponseModel):
     comparison: str
     limit: int

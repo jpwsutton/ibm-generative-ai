@@ -3,7 +3,7 @@ import logging
 from genai.credentials import Credentials
 from genai.exceptions import GenAiException
 from genai.schemas.history_params import HistoryParams
-from genai.schemas.responses import HistoryResponse, TermsOfUse
+from genai.schemas.responses import HistoryResponse, ModelResponse, TermsOfUse
 from genai.services import ServiceInterface
 
 logger = logging.getLogger(__name__)
@@ -62,6 +62,17 @@ class Metadata:
                 return history_data
             else:
                 raise GenAiException(history_response)
+        except GenAiException as me:
+            raise me
+        except Exception as ex:
+            raise GenAiException(ex)
+
+    def get_models(self):
+        try:
+            models_response = self.service.models()
+            models = ModelResponse(**models_response.json())
+            return models.results
+
         except GenAiException as me:
             raise me
         except Exception as ex:
