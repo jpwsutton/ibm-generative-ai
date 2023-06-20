@@ -25,7 +25,9 @@ logger = logging.getLogger(__name__)
 class Model:
     _accessors = set()
 
-    def __init__(self, model: ModelType, params: Union[GenerateParams, TokenParams], credentials: Credentials):
+    def __init__(
+        self, model: Union[ModelType, str], params: Union[GenerateParams, TokenParams], credentials: Credentials
+    ):
         """Instantiates the Model Interface
 
         Args:
@@ -34,9 +36,19 @@ class Model:
             credentials (Credentials): The API Credentials
         """
         logger.debug(f"Model Created:  Model: {model}, endpoint: {credentials.api_endpoint}")
-        self.model = model
+        if type(model) == ModelType:
+            self.model = model.value
+        else:
+            self.model = model
         self.params = params
         self.service = ServiceInterface(service_url=credentials.api_endpoint, api_key=credentials.api_key)
+        self.check_model_is_valid()
+
+    def check_model_is_valid(self):
+        model_response = self.service.model(self.model)
+        if model_response.status_code != 200:
+            print(model_response.content)
+            raise GenAiException(f"The Model {self.model} does not exist, please check that the ID is correct")
 
     def generate_stream(self, prompts: Union[list[str], list[PromptPattern]]) -> Generator[GenerateStreamResponse]:
         if len(prompts) > 0 and isinstance(prompts[0], PromptPattern):

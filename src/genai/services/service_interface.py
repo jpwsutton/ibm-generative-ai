@@ -1,3 +1,5 @@
+import urllib.parse
+
 from httpx import Response
 
 from genai.exceptions import GenAiException
@@ -115,6 +117,14 @@ class ServiceInterface:
             if full is True:
                 endpoint = self.service_url + ServiceInterface.MODELS + "/full"
 
+            return RequestHandler.get(endpoint, key=self.key)
+        except Exception as e:
+            raise GenAiException(e)
+
+    def model(self, model_id: str) -> Response:
+        try:
+            encoded_id = urllib.parse.quote_plus(model_id)
+            endpoint = f"{self.service_url}{ServiceInterface.MODELS}/{encoded_id}"
             return RequestHandler.get(endpoint, key=self.key)
         except Exception as e:
             raise GenAiException(e)
