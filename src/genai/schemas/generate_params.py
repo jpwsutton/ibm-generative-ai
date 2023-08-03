@@ -4,6 +4,7 @@ from warnings import warn
 from pydantic import BaseModel, Extra, Field
 
 from genai.schemas import Descriptions as tx
+from genai.schemas.generate_params_descriptions import GenerateParamsDescriptions as gpd
 
 # API Reference : https://workbench.res.ibm.com/docs
 
@@ -55,26 +56,26 @@ class ModerationParams(BaseModel):
 class GenerateParams(BaseModel):
     class Config:
         anystr_strip_whitespace = True
-        extra = Extra.forbid
+        extra = Extra.allow
         allow_population_by_field_name = True
 
-    decoding_method: Optional[Literal["greedy", "sample"]] = Field(None, description=tx.DECODING_METHOD)
-    length_penalty: Optional[LengthPenalty] = Field(None, description=tx.LENGTH_PENALTY)
-    max_new_tokens: Optional[int] = Field(None, description=tx.MAX_NEW_TOKEN, ge=1)
-    min_new_tokens: Optional[int] = Field(None, description=tx.MIN_NEW_TOKEN, ge=0)
+    decoding_method: Optional[Literal["greedy", "sample"]] = Field(None, description=gpd.DECODING_METHOD)
+    length_penalty: Optional[LengthPenalty] = Field(None, description=gpd.LENGTH_PENALTY)
+    max_new_tokens: Optional[int] = Field(None, description=gpd.MAX_NEW_TOKENS, ge=1)
+    min_new_tokens: Optional[int] = Field(None, description=gpd.MIN_NEW_TOKENS, ge=0)
     moderations: Optional[ModerationParams] = Field(None, description="")
-    random_seed: Optional[int] = Field(None, description=tx.RANDOM_SEED, ge=1)
-    stop_sequences: Optional[list[str]] = Field(None, description=tx.STOP_SQUENCES, min_length=1)
-    stream: Optional[bool] = Field(None, description=tx.STREAM)
-    temperature: Optional[float] = Field(None, description=tx.TEMPERATURE, ge=0.05, le=2.00)
-    time_limit: Optional[int] = Field(None, description=tx.TIME_LIMIT)
-    top_k: Optional[int] = Field(None, description=tx.TOP_K, ge=1)
-    top_p: Optional[float] = Field(None, description=tx.TOP_P, ge=0.00, le=1.00)
-    typical_p: Optional[float] = Field(None, description=tx.TYPICAL_P, ge=0.01, le=1.00, multiple_of=0.01)
+    random_seed: Optional[int] = Field(None, description=gpd.RANDOM_SEED, ge=1)
+    stop_sequences: Optional[list[str]] = Field(None, description=gpd.STOP_SEQUENCES, min_length=1)
+    stream: Optional[bool] = Field(None, description=gpd.STREAM)
+    temperature: Optional[float] = Field(None, description=gpd.TEMPERATURE, ge=0.00, le=2.00)
+    time_limit: Optional[int] = Field(None, description=gpd.TIME_LIMIT)
+    top_k: Optional[int] = Field(None, description=gpd.TOP_K, ge=1)
+    top_p: Optional[float] = Field(None, description=gpd.TOP_P, ge=0.00, le=1.00)
+    typical_p: Optional[float] = Field(None, description=gpd.TYPICAL_P, ge=0.01, le=1.00, multiple_of=0.01)
     repetition_penalty: Optional[float] = Field(
-        None, description=tx.REPETITION_PENALTY, multiple_of=0.01, ge=1.00, le=2.00
+        None, description=gpd.REPETITION_PENALTY, multiple_of=0.01, ge=1.00, le=2.00
     )
-    truncate_input_tokens: Optional[int] = Field(None, description=tx.TRUNCATE_INPUT_TOKENS, ge=0)
-    beam_width: Optional[int] = Field(None, description=tx.BEAM_WIDTH, ge=0)
+    truncate_input_tokens: Optional[int] = Field(None, description=gpd.TRUNCATE_INPUT_TOKENS, ge=0)
+    beam_width: Optional[int] = Field(None, description=gpd.BEAM_WIDTH, ge=0)
     return_options: Optional[ReturnOptions] = Field(None, description=tx.RETURN)
     returns: Optional[Return] = Field(None, description=tx.RETURN, alias="return", deprecated=True)
