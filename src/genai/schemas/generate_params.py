@@ -45,16 +45,24 @@ class Return(ReturnOptions):
 # Link to doc : https://workbench.res.ibm.com/docs/api-reference#generate
 
 
+class ModerationParams(BaseModel):
+    input: Optional[bool] = Field(None, description="")
+    output: Optional[bool] = Field(None, description="")
+    threshold: Optional[float] = Field(None, description="", ge=1.0, le=0.0, multiple_of=0.01)
+    send_tokens: Optional[bool] = Field(None, description="")
+
+
 class GenerateParams(BaseModel):
     class Config:
         anystr_strip_whitespace = True
-        extra = Extra.allow
+        extra = Extra.forbid
         allow_population_by_field_name = True
 
     decoding_method: Optional[Literal["greedy", "sample"]] = Field(None, description=tx.DECODING_METHOD)
     length_penalty: Optional[LengthPenalty] = Field(None, description=tx.LENGTH_PENALTY)
     max_new_tokens: Optional[int] = Field(None, description=tx.MAX_NEW_TOKEN, ge=1)
     min_new_tokens: Optional[int] = Field(None, description=tx.MIN_NEW_TOKEN, ge=0)
+    moderations: Optional[ModerationParams] = Field(None, description="")
     random_seed: Optional[int] = Field(None, description=tx.RANDOM_SEED, ge=1)
     stop_sequences: Optional[list[str]] = Field(None, description=tx.STOP_SQUENCES, min_length=1)
     stream: Optional[bool] = Field(None, description=tx.STREAM)
@@ -62,6 +70,7 @@ class GenerateParams(BaseModel):
     time_limit: Optional[int] = Field(None, description=tx.TIME_LIMIT)
     top_k: Optional[int] = Field(None, description=tx.TOP_K, ge=1)
     top_p: Optional[float] = Field(None, description=tx.TOP_P, ge=0.00, le=1.00)
+    typical_p: Optional[float] = Field(None, description=tx.TYPICAL_P, ge=0.01, le=1.00, multiple_of=0.01)
     repetition_penalty: Optional[float] = Field(
         None, description=tx.REPETITION_PENALTY, multiple_of=0.01, ge=1.00, le=2.00
     )
